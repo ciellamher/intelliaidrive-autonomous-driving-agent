@@ -3,6 +3,11 @@
 ## 1. Dataset Overview
 For the visual perception component of IntelliAIDrive, we utilized the Traffic Signs Detection dataset sourced from Kaggle (`pkdarabi/cardetection`). This dataset includes a diverse set of real-world traffic sign classes (such as speed limits, stop signs, and turn directions) captured in various public road environments. Because the dataset features street signs rather than individuals, PII and human consent risks are minimized. The high variance in this dataset ensures our CNN backbone can generalize to the complex environmental states required by the RL agent.
 
+### Exploratory Data Analysis (Class Distribution)
+Before processing the images through our pipeline, we conducted an exploratory data analysis (EDA) to evaluate the dataset for class imbalances. As shown in the distribution chart below, we mapped the frequency of each traffic sign class to ensure our training splits maintained proportional representation, preventing the CNN from over-indexing on the most common signs.
+
+![Traffic Sign Class Distribution](./assets/class_distribution.png)
+
 ## 2. Image Cleaning & Validation (YOLOv8n Detection)
 Unlike tabular datasets, our cleaning process focused on spatial localization and filtering out low-confidence data before it reached the decision-making agent.
 * **Localization & Cropping:** We utilized a fine-tuned YOLOv8n model to detect and crop only the relevant traffic signs from the broader, noisy environmental frames.
