@@ -1,20 +1,17 @@
-# Ethics Statement: IntelliDrive AI
+# Ethics Statement: IntelliDrive AI (v0.9)
 
 ## Purpose
-IntelliDrive AI is designed to demonstrate the potential of computer vision and reinforcement learning in autonomous driving. It is intended for research and educational purposes only.
+IntelliDrive AI is designed to demonstrate the potential of multi-stage computer vision and reinforcement learning in autonomous driving. It is intended for research and educational purposes only.
 
 ## Safety & Responsibility
-- **Simulation Environment**: This system operates primarily in a simulated environment. Real-world deployment is strictly prohibited without rigorous, multi-stage testing in controlled and regulated settings.
-- **Human Oversight**: We advocate for a "human-in-the-loop" approach where human operators maintain ultimate control and can intervene to override autonomous decisions.
-- **Fail-safe Logic**: The system implements priority-based rules (e.g., STOP signs and Red Lights trigger immediate braking) to provide a layer of safety above purely learned behaviors.
+* **Hybrid Decision Logic**: The system utilizes a multi-layered approach. YOLOv8n handles initial detection, while ResNet18 provides robust feature embeddings (achieving **~99.28% test accuracy**). Finally, the Reinforcement Learning agent (PPO) manages classification within a `Gymnasium`-based environment.
+* **Simulation Sovereignty**: All training and evaluation occur within a controlled simulation. Real-world deployment is strictly prohibited as the RL reward shaping (currently optimized at a **+5/-3 ratio**) is tuned for simulated convergence, not human-safety critical environments.
+* **Human Oversight**: We advocate for a "human-in-the-loop" approach where human operators maintain ultimate control and can intervene to override autonomous decisions. 
 
-## Data Ethics
-- **Provenance**: The models are trained on publicly available datasets from Kaggle:
-    - [Traffic Sign Classification](https://www.kaggle.com/datasets/ahemateja19bec1025/traffic-sign-dataset-classification)
-    - [Traffic Signs Detection](https://www.kaggle.com/datasets/pkdarabi/cardetection)
-- **Privacy**: We confirm that no Personally Identifiable Information (PII) of real-world drivers, pedestrians, or vehicle owners is stored or processed within this project.
-- **Transparency**: We are committed to transparency regarding the limitations of our training data and the potential for bias in detection across different environmental conditions.
+## Data Ethics & Model Integrity
+* **Provenance**: The models are trained on publicly available datasets from Kaggle.
+* **Accuracy & Transparency**: We acknowledge the performance gap between the CNN feature pipeline (~99.28%) and the RL agent (94.1%). We are committed to transparency regarding these margins, the current F1 Score of **91.9%**, and the potential for bias in detection across low-light or adverse weather conditions.
+* **Privacy**: We confirm that no Personally Identifiable Information (PII) of real-world drivers, pedestrians, or vehicle owners is stored or processed within this project.
 
 ## Environmental Impact
-- **Optimization**: Training workflows were optimized to minimize computational cycles and associated carbon footprint.
-- **Efficiency**: The use of lightweight models like YOLOv8n and shallow CNNs ensures energy-efficient inference during deployment.
+* **Optimization**: Training workflows were optimized to minimize computational cycles. By utilizing pre-trained networks (YOLOv8n and ResNet18) to handle vision tasks before RL training, we significantly reduced the agent's exploration time and total carbon footprint.
