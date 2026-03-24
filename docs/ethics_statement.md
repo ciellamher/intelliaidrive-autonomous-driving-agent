@@ -26,4 +26,4 @@ The deployment of autonomous driving simulations introduces specific ethical and
 
 ## 4. Environmental Impact
 * **Optimization:** Training workflows were optimized to minimize computational cycles and the associated carbon footprint.
-* **Efficiency:** By decoupling the vision pipeline and utilizing lightweight models like YOLOv8n paired with a modified ResNet18 feature extractor, we ensure energy-efficient inference and significantly reduce computational overhead during deployment.
+* **Efficiency:** By decoupling the vision pipeline and utilizing lightweight models like YOLOv8n paired with a modified ResNet18 feature extractor, we ensure energy-efficient inference and significantly reduce computational overhead during deployment.    
