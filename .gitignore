@@ -3,3 +3,9 @@ data/car/
 experiments/runs/
 *.pt
 *.zip
+__pycache__/
+build/
+dist/
+*.spec
+*.DS_Store
+.venv/
