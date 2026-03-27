@@ -44,16 +44,33 @@ Additional outputs included:
 
 ## Quick Start
 
-### Run the project
+### Run the project | create your own environment
 
 ```bash
-bash run.sh
+#Windows
+python -m venv .venv
+
+#Mac
+python3 -m venv .venv
+
+#Activate the environment on Windows
+.venv\Scripts\activate
+
+#Activate the environment on Mac
+source .venv/bin/activate
 ```
 
 ### Install dependencies manually
 
 ```bash
 pip install -r requirements.txt
+```
+
+# Run the app
+```bash
+python3 app/intellidrive.py
+#or
+python app/intellidrive.py
 ```
 
 ---

@@ -1,0 +1,21 @@
+# FlowCast AI System Configuration
+
+system:
+  device: "auto"        # "cuda", "mps", "cpu", or "auto"
+  log_level: "INFO"
+  
+vision:
+  model_id: "yolov8n.pt" # "yolov8n.pt", "yolov8s.pt", etc.
+  sign_model_id: null
+  confidence: 0.15        # Detection confidence threshold
+  imgsz: 640            # Reverted to 640 for detection quality
+  classes: null  # COCO indices: person(0), car(2), motorcycle(3), bus(5), train(6), truck(7), etc. (null for all)
+  
+tracking:
+  buffer_frames: 30      # Max frames a missing track is kept alive
+  frame_rate: 30         # Assumed target FPS
+  
+api:
+  host: "0.0.0.0"
+  port: 8000
+  websocket_path: "/ws/stream"
