@@ -104,6 +104,51 @@ class DualYOLODetector:
                         cv2.putText(annotated_frame, f"{int(dist)}px", (mid_x, mid_y), 
                                     cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255, 255, 255), 1)
 
+        # -------------------------
+        # Dashboard Overlay Logic
+        # -------------------------
+        # Calculate counts from the current frame centers
+        vehicle_count = sum(len(class_centers.get(lbl, [])) for lbl in ['car', 'truck', 'bus', 'motorcycle'])
+        person_count = len(class_centers.get('person', []))
+        
+        # Determine signals
+        active_light = "None"
+        if len(class_centers.get('Red Light', [])) > 0:
+            active_light = "RED"
+        elif len(class_centers.get('Green Light', [])) > 0:
+            active_light = "GREEN"
+
+        active_signs = []
+        for lbl in class_centers.keys():
+            if 'Speed Limit' in lbl or 'Stop' in lbl:
+                active_signs.append(lbl)
+        
+        # Determine intent
+        intent = "GO"
+        intent_color = (0, 255, 0) # Green in BGR
+        if active_light == "RED" or "Stop" in active_signs:
+            intent = "STOP"
+            intent_color = (0, 0, 255) # Red
+        elif person_count > 0:
+            intent = "SLOW (Pedestrians)"
+            intent_color = (0, 255, 255) # Yellow
+
+        # Draw semi-transparent background
+        overlay = annotated_frame.copy()
+        cv2.rectangle(overlay, (20, 20), (320, 220), (0, 0, 0), -1)
+        cv2.addWeighted(overlay, 0.6, annotated_frame, 0.4, 0, annotated_frame)
+
+        # Draw texts
+        cv2.putText(annotated_frame, "FlowCast Intelligence", (30, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
+        cv2.putText(annotated_frame, f"Vehicles Detected: {vehicle_count}", (30, 85), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (200, 200, 200), 1)
+        cv2.putText(annotated_frame, f"Pedestrians: {person_count}", (30, 115), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (200, 200, 200), 1)
+        cv2.putText(annotated_frame, f"Traffic Light: {active_light}", (30, 145), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (200, 200, 200), 1)
+        
+        signs_str = ", ".join(active_signs) if active_signs else "None"
+        cv2.putText(annotated_frame, f"Signs: {signs_str}", (30, 175), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (200, 200, 200), 1)
+        
+        cv2.putText(annotated_frame, f"INTENT: {intent}", (30, 205), cv2.FONT_HERSHEY_SIMPLEX, 0.7, intent_color, 2)
+
         return annotated_frame
 
 def main(video_path="../data/video.mp4"):
