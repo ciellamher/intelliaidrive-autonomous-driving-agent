@@ -1,0 +1,15 @@
+Dataset Split Explanation
+The dataset underwent two distinct splitting processes for different phases of model training and evaluation:
+
+YOLOv8 Classification Model Training:
+
+Method: Ultralytics' internal data splitting mechanism.
+Source Data: The traffic_Data/DATA directory, containing all training images.
+Split Ratio: 80% for training and 20% for validation.
+Details: When the yolo_model.train() function was called with data=DATASET_PATH, Ultralytics automatically scanned the directory (traffic_Data/DATA) and performed an 80/20 split. This resulted in approximately 3313 images for training and 857 images for validation across 58 classes. This split was managed entirely by the YOLOv8 framework for its own training and validation metrics.
+CNN Classifier and RL Agent Training/Evaluation:
+
+Method: sklearn.model_selection.train_test_split function.
+Source Data: The images and labels lists, which were loaded from the entire traffic_Data/DATA directory.
+Split Ratio: 80% for training (train_imgs, train_lbls) and 20% for testing (test_imgs, test_lbls).
+Details: A random_state=42 was used to ensure reproducibility of the split. This split was applied globally to the pre-loaded images and labels, ensuring that both the standalone CNN classifier and the RL agent were trained on the same training set and evaluated on an independent test set. This test set was also consistently used for the ablation study and all final evaluation metrics.

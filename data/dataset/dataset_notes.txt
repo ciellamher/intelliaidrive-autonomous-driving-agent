@@ -1,0 +1,6 @@
+About Dataset
+Here is the dataset for classifying the different classes of traffic signs. There are around 58 classes and each class has around 120 images. the labels.csv file has the respective description of the traffic sign class. You can change the assignment of these classIDs with descriptions. We can use the basic CNN model to get decent val accuracy. We have around 2000 files for testing.
+
+You can view the notebook named official in the code section to train and test basic cnn model.
+
+Please upvote the notebook and dataset if you like this.

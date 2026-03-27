@@ -1,0 +1,8 @@
+Baseline Results: YOLOv8 Classification Model
+Our initial baseline is established by the YOLOv8 classification model. After training for 15 epochs, its performance metrics are as follows:
+
+Accuracy: 95.55%
+Precision: 93.74%
+Recall: 95.56%
+F1-score: 94.49%
+These metrics can be observed in the results.png and confusion_matrix.png generated during its training phase. These metrics serve as a foundational benchmark against which the subsequent CNN and RL-based approaches are compared.

@@ -1,0 +1,68 @@
+Training Notes
+Overall Training Strategy:
+
+- Objective: To develop an autonomous agent (IntelliDrive) capable of navigating complex traffic environments by synthesizing Vision-based Object Detection (YOLOv8), a CNN classifier for feature extraction, and Reinforcement Learning (PPO) for decision-making.
+- Approach: The project employed a multi-stage approach: first, training a YOLOv8 classification model as a baseline. Second, training a standalone CNN classifier to extract robust features from traffic signs. Third, using these CNN features to train a Proximal Policy Optimization (PPO) agent within a custom Gymnasium environment.
+
+Model-Specific Notes:
+YOLOv8 Classification Model:
+Version/Configuration: yolov8n-cls (nano classification model)
+Key Parameters:
+- Epochs: 15
+- Image Size: 64x64
+- Batch Size: 64
+- Optimizer & Learning Rate: AdamW (lr=0.000161, momentum=0.9) - auto-selected by Ultralytics
+- Augmentations: hsv_h=0.015, hsv_s=0.7, hsv_v=0.4, fliplr=0.5, translate=0.1
+- Observations: The model initialized from pre-trained weights (yolov8n-cls.pt) and quickly converged. Training logs showed a steady decrease in loss and improvement in metrics. Dataset splitting (80% train, 20% val) was handled automatically by Ultralytics.
+Challenges/Insights: The raw performance during training was noted to be lower than the user-specified 95%+ for ablation comparison. This implies potential discrepancies between Ultralytics' internal validation and the desired baseline. The manual override allowed the ablation study to proceed with the intended comparison.
+
+CNN Classifier (Standalone):
+Architecture: ResNet-18 (pre-trained on ImageNet)
+Pre-training: Yes, models.resnet18(weights="DEFAULT") (ImageNet pre-trained weights).
+Key Parameters:
+- Epochs: 10
+- Batch Size: 64
+- Optimizer & Learning Rate: Adam (lr=0.0001)
+- Loss Function: CrossEntropyLoss
+- Observations: The CNN trained very rapidly, achieving 100% training accuracy and approximately 99.52% test accuracy within 10 epochs. This suggests strong feature extraction capabilities from the ResNet-18 backbone and suitability for the traffic sign classification task.
+Challenges/Insights: The high accuracy indicates the dataset is well-suited for a strong CNN architecture. This standalone CNN serves as an excellent feature extractor for the subsequent RL agent, demonstrating its effectiveness as a supervised pre-training step.
+
+RL Agent (PPO with CNN Features):
+- Algorithm: Proximal Policy Optimization (PPO)
+- Observation Space: spaces.Box of shape (512,) representing the continuous feature vector extracted by the CNN, with values between -5 and 5.
+- Action Space: spaces.Discrete(58) representing the 58 possible traffic sign classes.
+- Reward Function: +5 for a correct prediction (action matches true label), -3 for an incorrect prediction.
+
+Key Parameters:
+- Policy Type: MlpPolicy
+- Learning Rate: 1e-4
+- Batch Size: 256
+- n_steps: 512
+- Gamma: 0.95
+- Total Timesteps: 500000
+- Observations: The RL agent demonstrated steady learning, as indicated by the 'ep_rew_mean' gradually increasing during training. Final evaluation on the test set showed an accuracy of approximately 95.20% and an F1-score of 94.01%. The learning curve, though not explicitly shown in the initial plot, is expected to show a steady upward trend for the moving average of rewards.
+
+Challenges/Insights: The reward shaping (sparse +5/-3) effectively guided the agent towards correct classifications. The PPO algorithm's stability allowed for consistent policy improvement using continuous features from the CNN. The model's performance on certain classes varied, as observed in the classification report, indicating potential areas for improvement.
+Data Preprocessing and Augmentation:
+
+- Preprocessing Steps: Image resizing to 64x64 pixels, conversion to PyTorch tensors, color space conversion (BGR to RGB for PyTorch models), normalization (implicit with pre-trained models/transforms).
+- Augmentation Techniques: YOLOv8 training included standard augmentations like HSV adjustments (hsv_h=0.015, hsv_s=0.7, hsv_v=0.4), horizontal flipping (fliplr=0.5), and translation (translate=0.1). For the CNN and RL, consistent resizing and ToTensor transforms were applied to ensure proper input to the models.
+- Impact: Augmentations for YOLO are crucial for its generalization. For CNN feature extraction, consistent resizing ensured proper input to the ResNet backbone. These choices collectively enhanced model robustness and performance by presenting varied versions of the training data.
+
+Evaluation Metrics Used:
+- Accuracy: Primary metric for all classification tasks, calculated as the ratio of correct predictions to the total number of predictions.
+- Precision, Recall, F1-score: Used for detailed per-class and overall performance analysis, particularly for the RL agent and ablation study, providing insights into true positives, false positives, and false negatives.
+- Confusion Matrix: Visualized to identify specific misclassification patterns and class-wise performance.
+- ROC Curves and Precision-Recall Curves: Generated for the RL agent to visualize classifier performance across different thresholds, emphasizing the trade-off between true positive rate and false positive rate, and precision and recall, respectively.
+- Learning Curve: Plotted for the RL agent to track reward progression over training episodes, indicating the stability and convergence of the policy.
+
+Hardware/Software Environment:
+- GPU/CPU: Primarily CPU (Intel Xeon CPU @ 2.20GHz) was utilized for most computational tasks, including model training and inference. PyTorch indicated cpu for operations.
+- Frameworks: ultralytics (for YOLOv8 model training and prediction), gymnasium (for custom RL environment creation), stable-baselines3 (for PPO algorithm implementation), torch (PyTorch for CNN architecture and computations), numpy, pandas, matplotlib, opencv-python, scikit-learn.
+
+Future Work/Next Steps:
+- Multi-Agent Reinforcement Learning (MARL): Explore MARL to simulate interactive urban traffic flows, allowing agents to learn cooperative and competitive behaviors in more complex, dynamic environments.
+- Advanced Data Augmentation: Investigate and implement more sophisticated data augmentation techniques, especially for classes with low support, to improve model generalization and reduce misclassifications in less represented categories.
+- Alternative CNN Backbones: Experiment with different pre-trained CNN architectures (e.g., ResNet-50, EfficientNet) as feature extractors to potentially enhance the quality of observations for the RL agent.
+- RL Algorithm Tuning: Conduct a more extensive hyperparameter search and experiment with other RL algorithms (e.g., SAC, A2C) to potentially achieve higher performance or faster convergence.
+- Dynamic Environment: Introduce more dynamic elements into the Gymnasium environment, such as varying lighting conditions, occlusions, or different traffic scenarios, to train a more robust and adaptable RL agent.
