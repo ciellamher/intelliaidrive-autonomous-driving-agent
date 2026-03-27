@@ -1,91 +1,95 @@
-# 🚦 IntelliAIDrive  
-**Hybrid Autonomous Navigation: Visual Perception, NLP Command Intent, and RL Decision-Making**
+# 🚦 IntelliAIDrive
+**Traffic Sign Classification and Reinforcement Learning for Simulated Autonomous Navigation**
 
-IntelliAIDrive is a full-stack autonomous driving simulation platform engineered to recognize, classify, and respond to traffic signs through a multi-stage artificial intelligence pipeline. It bridges the gap between algorithmic decision-making and human oversight by combining Deep Learning vision pipelines with NLP-driven Reinforcement Learning.
+IntelliAIDrive is a simulation-based AI project that combines traffic sign classification and reinforcement learning for autonomous navigation research. The system uses a lightweight YOLOv8n classification model to recognize traffic signs, then integrates this structured information into a reinforcement learning environment for decision-making.
 
----
-
-## 🧠 System Architecture
-
-Our architecture decouples visual feature extraction from the core navigation policy to optimize decision-making efficiency:
-
-- **Visual Perception (YOLOv8n + ResNet18):**  
-  YOLOv8n handles real-time detection and localization of traffic signs. These cropped bounding boxes are passed to a modified ResNet18 backbone (with an Identity layer) to extract dense, 512-dimensional feature embeddings.
-
-- **Dynamic Decision Making (PPO RL Agent):**  
-  A Proximal Policy Optimization (PPO) agent operating in a custom Gymnasium environment maps the 512-dimensional visual embeddings to optimal driving actions.
-
-- **Human-in-the-Loop NLP:**  
-  An intent classifier processes text-based user driving commands (e.g., "drive safely" vs. "drive aggressively") to dynamically adjust the RL agent's reward weights on the fly without violating absolute safety constraints.
+The project was developed as a final requirement for **6INTELSY AY 2025-2026**.
 
 ---
 
-## 🚀 Quick Start & Reproducibility
+## Overview
 
-### 1. Full Pipeline Reproduction
+The goal of IntelliAIDrive is to explore how structured visual recognition can support downstream navigation decisions more effectively than raw image input alone. Instead of forcing the decision-making stage to learn directly from pixels, the system first performs traffic sign classification and then passes the resulting information into a simulated RL setup.
 
-To ensure academic rigor and strict reproducibility, the entire pipeline (environment setup, baseline training, and evaluation) can be executed via a single command:
-
-```bash
-make repro
-```
+This modular design makes the pipeline easier to interpret, lighter to train, and more suitable for controlled academic experimentation.
 
 ---
 
-### 2. Standalone Real-Time Detection (CLI)
+## Final Results
 
-To run the YOLOv8n + ResNet18 detection pipeline in real-time directly in a window:
+The final evaluated model achieved:
 
-```bash
-python3 src/video_cli.py
-```
+- **Accuracy:** 95.08%
+- **F1-Score:** 93.38%
+- **Precision:** 92.08%
+- **Recall:** 95.08%
+
+Additional outputs included:
+
+- YOLO training curves
+- Final metrics bar chart
+- Confusion matrix
+- Precision-recall curves for selected classes
 
 ---
 
-### 3. Full-Stack Application (Backend + Frontend)
+## Project Components
+
+- **Traffic Sign Classification:** YOLOv8n classification model trained on a multi-class traffic sign dataset
+- **Reinforcement Learning:** PPO-based decision-making in a simulated navigation environment
+- **Evaluation:** Accuracy, precision, recall, F1-score, confusion matrix, and class-wise precision-recall analysis
+- **Documentation:** Proposal, checkpoint report, final report, ethics statement, and model card
+
+---
+
+## Quick Start
+
+### Run the project
 
 ```bash
 bash run.sh
 ```
 
----
+### Install dependencies manually
 
-## 📊 Documentation & Setup
-
-For a deep dive into our methodology, data sourcing, and model evaluations, please review our formal documentation:
-
-- **[Data Preparation & Preprocessing](docs/data_preprocessing.md)**  
-  Detailed breakdown of our dataset validation, YOLO spatial filtering, and ResNet tensor transformations.
-
-- **[Ethics Statement & Risk Register](docs/ethics_statement.md)** *(Coming Soon)*
-
-- **[Model Card](docs/model_card.md)** *(Coming Soon)*
-
----
-
-## 📁 Repository Structure
-
-```text
-IntelliAIDrive/
-├── src/           # YOLO/ResNet Vision pipelines and API Backend
-├── models/        # Saved model weights (.pt files)
-├── rl/            # PPO Agent and Custom Gymnasium Environment
-├── experiments/   # Jupyter notebooks for ablations and baselines
-├── frontend/      # React + Tailwind Dashboard
-└── docs/          # Project documentation, Ethics, and Data Prep
+```bash
+pip install -r requirements.txt
 ```
 
 ---
 
-## 👥 The Team (6INTELSY)
+## Repository Files
 
-- **Graciella Mhervie D. Jimenez** — Project Lead & Integration  
-- **Jenica Sarah B. Tongol** — Data & Ethics Lead  
-- **Arron Kian M. Parejas** — Modeling Lead (CNN/NLP/RL)  
-- **Jian Kalel D. Marquez** — Evaluation & MLOps Lead  
+- `README.md` - project overview and quick start
+- `run.sh` - one-command reproduction script
+- `requirements.txt` - environment dependencies
+- `docs/model_card.md` - model details, intended use, and limitations
+- `docs/ethics_statement.md` - risks, mitigations, and responsible-use notes
+- `docs/IntelliAIDrive_Proposal.pdf` - proposal
+- `docs/IntelliAIDrive_Checkpoint_Report.pdf` - checkpoint report
+- `docs/IntelliAIDrive_Final_Report.pdf` - final report
 
 ---
 
-## 📄 License
+## Documentation
+
+- **Final Report:** `docs/IntelliAIDrive_Final_Report.pdf`
+- **Proposal:** `docs/IntelliAIDrive_Proposal.pdf`
+- **Checkpoint Report:** `docs/IntelliAIDrive_Checkpoint_Report.pdf`
+- **Model Card:** `docs/model_card.md`
+- **Ethics Statement:** `docs/ethics_statement.md`
+
+---
+
+## Team
+
+- Graciella Mhervie D. Jimenez - Project Lead & Integration
+- Jenica Sarah B. Tongol - Data & Ethics Lead
+- Arron Kian M. Parejas - Modeling Lead
+- Jian Kalel D. Marquez - Evaluation & MLOps Lead
+
+---
+
+## License
 
 MIT License
